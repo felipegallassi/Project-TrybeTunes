@@ -4,6 +4,7 @@ import Header from '../Components/Header';
 import Loading from '../Components/Loading';
 import getMusics from '../services/musicsAPI';
 import MusicCard from '../Components/MusicCard';
+import { addSong, removeSong } from '../services/favoriteSongsAPI';
 
 class Album extends React.Component {
   constructor() {
@@ -15,7 +16,9 @@ class Album extends React.Component {
       album: '',
       artist: '',
       image: '',
+      favorite: [],
     };
+    this.handleCheckbox = this.handleCheckbox.bind(this);
   }
 
   async componentDidMount() {
@@ -34,31 +37,64 @@ class Album extends React.Component {
     });
   }
 
+  handleCheckbox({ target: { checked } }, music) {
+    this.setState({
+      isLoading: true,
+    }, async () => {
+      if (checked) {
+        await addSong(music);
+        this.setState((prevState) => ({
+          isLoading: false,
+          favorite: [...prevState.favorite, music],
+        }));
+      } else {
+        await removeSong(music);
+        this.setState((prevState) => ({
+          isLoading: false,
+          favorite: prevState.favorite.filter((fav) => (
+            fav.trackId !== music.trackId
+          )),
+        }));
+      }
+    });
+  }
+
   render() {
-    const { isLoading, musicList, album, artist, image } = this.state;
+    const { isLoading, musicList, album, artist, image, favorite } = this.state;
     return (
-      <div>
+      <div data-testid="page-album">
         <Header />
+        <div>
+          <img src={ image } alt={ `${album} - ${artist}` } />
+        </div>
+        <div data-testid="album-name">
+          <h3>{ album }</h3>
+        </div>
+        <div data-testid="artist-name">
+          <p>{ artist }</p>
+        </div>
         <div>
           {isLoading ? <Loading />
             : (
               <div>
-                <div>
-                  <img src={ image } alt={ `${album} - ${artist}` } />
-                </div>
-                <div data-testid="album-name">
-                  <h3>{ album }</h3>
-                </div>
-                <div data-testid="artist-name">
-                  <p>{ artist }</p>
-                </div>
                 { musicList.map((music, index) => {
                   if (index !== 0) {
                     return (
-                      <MusicCard
-                        music={ music }
-                        key={ music.trackId }
-                      />
+                      <div key={ music.trackId }>
+                        <MusicCard music={ music } />
+                        <label htmlFor={ `favorite-${music.trackId}` }>
+                          <input
+                            id={ `favorite-${music.trackId}` }
+                            type="checkbox"
+                            name="favorite"
+                            data-testid={ `checkbox-music-${music.trackId}` }
+                            onChange={ (e) => this.handleCheckbox(e, music) }
+                            checked={ favorite
+                              .some((fav) => fav.trackId === music.trackId) }
+                          />
+                          Favorita
+                        </label>
+                      </div>
                     );
                   } return '';
                 })}
@@ -68,7 +104,6 @@ class Album extends React.Component {
     );
   }
 }
-
 Album.propTypes = {
   match: propTypes.shape({
     params: propTypes.shape({
@@ -76,5 +111,4 @@ Album.propTypes = {
     }),
   }).isRequired,
 };
-
 export default Album;

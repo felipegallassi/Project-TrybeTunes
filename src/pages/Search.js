@@ -41,14 +41,16 @@ class Search extends React.Component {
       isLoading: true,
     });
     const { searchName } = this.state;
-    const result = await searchAlbumsAPI(searchName);
-    console.log(result);
     this.setState({
       inputSearch: searchName,
-      searchName: '',
       btnDisabled: true,
-      albuns: result,
       isLoading: false,
+    }, async () => {
+      const result = await searchAlbumsAPI(searchName);
+      this.setState({
+        albuns: result,
+        searchName: '',
+      });
     });
   }
 
@@ -96,8 +98,8 @@ class Search extends React.Component {
                             src={ album.artworkUrl100 }
                             alt={ `${album.collectionName} - ${album.artistName}` }
                           />
-                          <p>{album.collectionName}</p>
-                          <p>{album.artistName}</p>
+                          <p>{ album.collectionName }</p>
+                          <p>{ album.artistName }</p>
                         </Link>
                       </li>
                     ))}
