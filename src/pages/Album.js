@@ -4,7 +4,7 @@ import Header from '../Components/Header';
 import Loading from '../Components/Loading';
 import getMusics from '../services/musicsAPI';
 import MusicCard from '../Components/MusicCard';
-import { addSong, removeSong } from '../services/favoriteSongsAPI';
+import { addSong, removeSong, getFavoriteSongs } from '../services/favoriteSongsAPI';
 
 class Album extends React.Component {
   constructor() {
@@ -21,18 +21,20 @@ class Album extends React.Component {
     this.handleCheckbox = this.handleCheckbox.bind(this);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const { match: { params: { id } } } = this.props;
     this.setState({
       isLoading: true,
     }, async () => {
       const results = await getMusics(id);
+      const favSongs = await getFavoriteSongs();
       this.setState({
         album: results[0].collectionName,
         artist: results[0].artistName,
         image: results[0].artworkUrl100,
         isLoading: false,
         musicList: results,
+        favorite: favSongs,
       });
     });
   }
