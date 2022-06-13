@@ -1,4 +1,4 @@
-<h1>Neste projeto você irá criar o TrybeTunes, uma aplicação capaz de reproduzir músicas das mais variadas bandas e artistas, criar uma lista de músicas favoritas e editar o perfil da pessoa usuária logada. Essa aplicação será capaz de:</h1>
+<h2>Neste projeto você irá criar o TrybeTunes, uma aplicação capaz de reproduzir músicas das mais variadas bandas e artistas, criar uma lista de músicas favoritas e editar o perfil da pessoa usuária logada. Essa aplicação será capaz de:</h2>
 
 -Fazer login;
 
@@ -18,7 +18,7 @@
 
 -Editar o perfil da pessoa logada;
 
-<h1>Habilidades utilizadas:</h1>
+<h2>Habilidades utilizadas:</h2>
 
 -Fazer requisições e consumir dados vindos de uma API;
 
